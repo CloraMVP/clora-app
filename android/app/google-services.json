@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "803193545766",
+    "project_id": "clora-ai",
+    "storage_bucket": "clora-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803193545766:android:7a047d2b957cae94e832e7",
+        "android_client_info": {
+          "package_name": "clora.com.clo_chat_v1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803193545766-1ohi60itr0sp23ktq59g7qor0rkfcet6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "clora.com.clo_chat_v1",
+            "certificate_hash": "9f780ffb60cb17f4e1f15dc3dde644ad89742a6a"
+          }
+        },
+        {
+          "client_id": "803193545766-e80nj5cm95jlujesbhni42vgtt5v7foq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV8hf5ewf4mecwyG-WjmSYtp9h4HQocMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803193545766-e80nj5cm95jlujesbhni42vgtt5v7foq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803193545766-fkd3iqfgeohmfqdb3umrb0iv49u60ar7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cloChatV3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803193545766:android:295f7dbc8518e4d0e832e7",
+        "android_client_info": {
+          "package_name": "com.example.clo_chat_v3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803193545766-e80nj5cm95jlujesbhni42vgtt5v7foq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV8hf5ewf4mecwyG-WjmSYtp9h4HQocMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803193545766-e80nj5cm95jlujesbhni42vgtt5v7foq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803193545766-fkd3iqfgeohmfqdb3umrb0iv49u60ar7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cloChatV3"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

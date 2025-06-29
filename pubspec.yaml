@@ -1,0 +1,62 @@
+name: clo_chat_v3
+description: Clora - Your AI-powered period and pregnancy companion.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Firebase
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.17.8
+  cloud_firestore: ^4.15.8
+  firebase_storage: ^11.7.1
+  firebase_messaging: ^14.7.17
+
+  # Google Sign-In
+  google_sign_in: ^6.2.1
+
+  # File & Media
+  image_picker: ^1.0.7       # ✅ Required for profile photo updates
+  permission_handler: ^11.3.0 # ✅ Runtime permission handling
+  path: ^1.9.0
+
+  # State & UI
+  provider: ^6.1.2
+  lottie: ^3.1.2
+  google_fonts: ^6.1.0
+
+  # Date formatting
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/google_logo.png
+    - assets/images/profile_placeholder.png
+    - assets/images/gynecologist_placeholder.png
+    - assets/animations/tracker_anim.json
+    - assets/logo/clora_logo.png           # ✅ Logo used on splash screen
+
+  fonts:
+    - family: ComicNeue
+      fonts:
+        - asset: assets/fonts/ComicNeue-Regular.ttf
+        - asset: assets/fonts/ComicNeue-Bold.ttf
+          weight: 700
+
+# ✅ Restrict to Android only
+platforms:
+  android:
+    pluginClass: MainActivity
