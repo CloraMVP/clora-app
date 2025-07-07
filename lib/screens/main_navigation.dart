@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'home_screen.dart';
 import 'clo_chat_screen.dart';
 import 'profile_screen.dart';
+import 'phone_verification_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -12,6 +15,8 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+  bool _checkingPhone = true;
+  bool _phoneVerified = false;
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -32,7 +37,41 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _checkPhoneVerification();
+  }
+
+  Future<void> _checkPhoneVerification() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.phoneNumber != null && user.phoneNumber!.isNotEmpty) {
+      setState(() {
+        _phoneVerified = true;
+        _checkingPhone = false;
+      });
+    } else {
+      setState(() => _checkingPhone = false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const PhoneVerificationScreen()),
+        );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_checkingPhone) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (!_phoneVerified) {
+      return const SizedBox(); // Will redirect to phone screen
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(

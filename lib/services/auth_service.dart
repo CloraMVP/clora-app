@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../services/firestore_service.dart';
+import '../models/user_model.dart';
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -10,14 +13,11 @@ class AuthService {
   // Get current user
   User? get currentUser => _auth.currentUser;
 
-  // Sign in with Google
+  // ✅ Sign in with Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        print("Google Sign-In aborted by user.");
-        return null;
-      }
+      if (googleUser == null) return null;
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
@@ -26,14 +26,34 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      return await _auth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
+      final user = userCredential.user;
+
+      if (user != null) {
+        final exists = await FirestoreService.getUserProfile(user.uid);
+        if (exists == null) {
+          final newUser = AppUser(
+            name: user.displayName ?? '',
+            email: user.email ?? '',
+            dob: '',
+            phone: user.phoneNumber ?? '',
+            city: '',
+            lastPeriodDate: '01-06-2024',
+            medicalHistory: '',
+            cycleLength: 28,
+          );
+          await FirestoreService.saveUserProfile(user.uid, newUser.toMap());
+        }
+      }
+
+      return userCredential;
     } catch (e) {
-      print("❌ Google Sign-In error: $e");
+      print("❌ Google Sign-In Error: $e");
       return null;
     }
   }
 
-  // Sign out
+  // ✅ Sign out
   Future<void> signOut() async {
     try {
       await GoogleSignIn().signOut();
@@ -43,13 +63,11 @@ class AuthService {
     }
   }
 
-  // Delete account
+  // ✅ Delete account
   Future<void> deleteAccount() async {
     try {
       final user = _auth.currentUser;
-      if (user != null) {
-        await user.delete();
-      }
+      if (user != null) await user.delete();
     } catch (e) {
       print("❌ Delete account error: $e");
     }

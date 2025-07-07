@@ -51,17 +51,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildItem("Name", _user!.name),
-            _buildItem("Email", _user!.email),
-            _buildItem("DOB", _user!.dob),
-            _buildItem("Phone", _user!.phone),
-            _buildItem("City / Zip", _user!.city),
-            _buildItem("Last Period", _user!.lastPeriodDate),
-            _buildItem("Medical History", _user!.medicalHistory.isEmpty ? "N/A" : _user!.medicalHistory),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildItem("Name", _user!.name),
+              _buildItem("Email", _user!.email),
+              _buildItem("DOB", _user!.dob ?? "Not set"),
+              _buildItem("Phone", _user!.phone ?? "Not set"),
+              _buildItem("City / Zip", _user!.city ?? "Not set"),
+              _buildItem("Last Period", _user!.lastPeriodDate),
+              _buildItem("Medical History", _user!.medicalHistory.isEmpty ? "N/A" : _user!.medicalHistory),
+            ],
+          ),
         ),
       ),
     );

@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "803193545766-0ftipa1oef8dhscpt7auch8n9gud946s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clo_chat_v3",
+            "certificate_hash": "9f780ffb60cb17f4e1f15dc3dde644ad89742a6a"
+          }
+        },
+        {
           "client_id": "803193545766-e80nj5cm95jlujesbhni42vgtt5v7foq.apps.googleusercontent.com",
           "client_type": 3
         }

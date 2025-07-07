@@ -26,4 +26,14 @@ class FirestoreService {
       print("Error saving user profile: $e");
     }
   }
+
+  // ✅ Add this: Update a single field (e.g., phone number)
+  static Future<void> updateUserField(String uid, String field, dynamic value) async {
+    try {
+      await _usersCollection.doc(uid).update({field: value});
+      print("✅ Firestore: '$field' updated for user $uid");
+    } catch (e) {
+      print("❌ Firestore update error: $e");
+    }
+  }
 }

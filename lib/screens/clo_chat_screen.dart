@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/clo_api_service.dart'; // ✅ Import backend service
 import '../widgets/gynecologist_carousel.dart';
 import 'consultation_chat_screen.dart';
 
@@ -16,34 +17,33 @@ class _CloChatScreenState extends State<CloChatScreen> {
   ];
 
   final TextEditingController _controller = TextEditingController();
+  bool _isLoading = false;
 
-  void _sendMessage() {
+  void _sendMessage() async {
     final input = _controller.text.trim();
-    if (input.isEmpty) return;
+    if (input.isEmpty || _isLoading) return;
 
     setState(() {
       messages.add({"from": "user", "text": input});
-      messages.add({"from": "clo", "text": _generateReply(input)});
+      _isLoading = true;
     });
 
     _controller.clear();
-  }
 
-  String _generateReply(String input) {
-    input = input.toLowerCase();
+    final reply = await CloApiService.getCloReply(input);
 
-    if (input.contains("period")) {
-      return "Tracking your period? I’ve got you! 💜";
-    } else if (input.contains("pregnancy")) {
-      return "Here’s a tip: stay hydrated and rest well 👶💧";
-    } else if (input.contains("consult") || input.contains("doctor")) {
+    setState(() {
+      _isLoading = false;
+      messages.add({"from": "clo", "text": reply});
+    });
+
+    // Auto-show gynecologist list for certain keywords
+    final lower = input.toLowerCase();
+    if (lower.contains("consult") || lower.contains("doctor")) {
       Future.delayed(const Duration(milliseconds: 500), () {
-        _showGynecologistList();
+        if (mounted) _showGynecologistList();
       });
-      return "Here are some trusted gynecologists 🩺";
     }
-
-    return "Let me get back to you on that 🦸‍♀️";
   }
 
   void _showGynecologistList() {
@@ -116,17 +116,31 @@ class _CloChatScreenState extends State<CloChatScreen> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(12),
-                itemCount: messages.length,
+                itemCount: messages.length + (_isLoading ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (_isLoading && index == messages.length) {
+                    return const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
                   final message = messages[index];
                   final isUser = message['from'] == 'user';
+
                   return Align(
-                    alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment:
+                    isUser ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: isUser ? Colors.pink.shade200 : Colors.purple.shade100,
+                        color: isUser
+                            ? Colors.pink.shade200
+                            : Colors.purple.shade100,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Text(
@@ -157,11 +171,12 @@ class _CloChatScreenState extends State<CloChatScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
+                      onSubmitted: (_) => _sendMessage(),
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    onPressed: _sendMessage,
+                    onPressed: _isLoading ? null : _sendMessage,
                     icon: const Icon(Icons.send, color: Colors.purple),
                   ),
                 ],

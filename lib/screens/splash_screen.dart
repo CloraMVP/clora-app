@@ -6,12 +6,12 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFCD0), // Match app background
+      backgroundColor: Colors.white, // ✅ Pure white background
       body: Center(
         child: Image.asset(
-          'assets/logo/clora_logo.png', // ✅ Your uploaded logo path
-          width: 150,
-          height: 150,
+          'assets/logo/clora_logo.png',
+          width: 300, // ✅ Doubled width
+          height: 300, // ✅ Doubled height
         ),
       ),
     );

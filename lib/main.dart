@@ -7,14 +7,16 @@ import 'screens/main_navigation.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/onboarding_form_screen.dart'; // ✅ NEW import
 import 'services/auth_service.dart';
+import 'services/firestore_service.dart';
 import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ Avoid duplicate Firebase initialization
   try {
+    // ✅ Firebase initialization (with duplicate check)
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -23,16 +25,13 @@ void main() async {
     } else {
       print("⚠️ Firebase already initialized");
     }
-  } catch (e) {
-    print("❌ Firebase init error: $e");
-  }
 
-  // ✅ Safe FCM init
-  try {
+    // ✅ FCM initialization
     await NotificationService.initFCM();
     print("✅ FCM initialized successfully");
+
   } catch (e) {
-    print("❌ Error initializing FCM: $e");
+    print("❌ Initialization Error: $e");
   }
 
   runApp(const CloraApp());
@@ -56,6 +55,8 @@ class CloraApp extends StatelessWidget {
       home: const SplashToAuth(),
       routes: {
         '/profile': (context) => const ProfileScreen(),
+        '/main': (context) => const MainNavigation(),
+        '/onboarding': (context) => const OnboardingFormScreen(), // ✅ NEW route
       },
     );
   }
@@ -74,9 +75,9 @@ class _SplashToAuthState extends State<SplashToAuth> {
   @override
   void initState() {
     super.initState();
-    print("🌀 Splash screen showing...");
+    print("🌀 Showing splash...");
     Future.delayed(const Duration(seconds: 2), () {
-      print("✅ Splash over, checking auth...");
+      print("✅ Splash done → moving to auth check...");
       setState(() => _showSplash = false);
     });
   }
@@ -98,12 +99,31 @@ class AuthWrapper extends StatelessWidget {
       stream: authService.authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
+
         if (snapshot.hasData) {
-          return const MainNavigation();
+          final user = snapshot.data!;
+          return FutureBuilder(
+            future: FirestoreService.getUserProfile(user.uid),
+            builder: (context, userSnap) {
+              if (userSnap.connectionState != ConnectionState.done) {
+                return const Scaffold(body: Center(child: CircularProgressIndicator()));
+              }
+
+              final userData = userSnap.data as Map<String, dynamic>?;
+
+              final needsOnboarding = userData == null ||
+                  (userData['dob'] ?? '').isEmpty ||
+                  (userData['city'] ?? '').isEmpty;
+
+              if (needsOnboarding) {
+                return const OnboardingFormScreen(); // 👈 send to form
+              } else {
+                return const MainNavigation();
+              }
+            },
+          );
         } else {
           return const LoginScreen();
         }
